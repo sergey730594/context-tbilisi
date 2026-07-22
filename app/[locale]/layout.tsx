@@ -1,4 +1,5 @@
 import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
 
 export default async function LocaleLayout({
   children,
@@ -7,12 +8,16 @@ export default async function LocaleLayout({
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  // Загружаем переводы для текущего языка
-  const messages = (await import(`../../messages/${params.locale}.json`)).default;
+  // Получаем сообщения для текущего языка
+  const messages = await getMessages();
 
   return (
-    <NextIntlClientProvider messages={messages}>
-      {children}
-    </NextIntlClientProvider>
+    <html lang={params.locale}>
+      <body style={{ margin: 0, padding: 0, backgroundColor: '#050816', color: '#F7F9FC', minHeight: '100vh', fontFamily: 'sans-serif' }}>
+        <NextIntlClientProvider messages={messages}>
+          {children}
+        </NextIntlClientProvider>
+      </body>
+    </html>
   );
 }
