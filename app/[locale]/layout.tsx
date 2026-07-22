@@ -6,13 +6,14 @@ export default async function LocaleLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>; // <-- Next.js 15 требует Promise
 }) {
-  // Получаем сообщения для текущего языка
+  // Мы должны "дождаться" (await) получения params
+  const { locale } = await params;
   const messages = await getMessages();
 
   return (
-    <html lang={params.locale}>
+    <html lang={locale}>
       <body style={{ margin: 0, padding: 0, backgroundColor: '#050816', color: '#F7F9FC', minHeight: '100vh', fontFamily: 'sans-serif' }}>
         <NextIntlClientProvider messages={messages}>
           {children}
